@@ -14,5 +14,5 @@ if __name__ == '__main__':
     loaded_model = model.loadModel(n_categories)
     trained_model = model.trainModel(loaded_model, X, y)
 
-    # X, y = tl.prepateTestData(args["path"])
-    # model.testModel(trained_model, X)
+    X, y = tl.prepateTestData(args["path"])
+    model.testModel(trained_model, X)

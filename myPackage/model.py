@@ -1,7 +1,9 @@
 from tensorflow.contrib.keras import applications, layers, models, optimizers
 import numpy as np
+from numba import jit
 # from PIL import Image as im
 
+@jit
 def loadModel(n_classes):
     base_model = applications.inception_v3.InceptionV3(input_shape= (299, 299, 3), weights= 'imagenet', include_top= False)
     # add a global spatial average pooling layer
@@ -19,6 +21,7 @@ def loadModel(n_classes):
 
     return model
 
+@jit
 def trainModel(model, X, y):
     batch_size = 32
     n_epoch = 1
@@ -26,6 +29,7 @@ def trainModel(model, X, y):
 
     return model
 
+@jit
 def testModel(model, X):
     batch_size = 32
     for i in X:
