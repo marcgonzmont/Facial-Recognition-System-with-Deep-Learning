@@ -1,5 +1,5 @@
 import os
-# from os import altsep
+from os.path import basename, splitext
 import numpy as np
 from numba import jit
 from keras.preprocessing import image
@@ -29,22 +29,36 @@ def prepareTrainData(data_path):
 
     X = applications.inception_v3.preprocess_input(np.array(X))
     y = np.array(y)
+    n_categories += 1
 
     return X, y, n_categories
 
 
 @jit
 def prepateTestData(data_path):
+    '''
+    Prepare train data from a given path. Extracts the images and the labels
+    :param data_path: path where the folders of the images are stored
+    :return: array of images and array of labels
+    '''
     X = []
     y = []
+    i = 0
+    prev = ''
 
-    for i, f in enumerate(os.listdir(os.path.join(data_path, 'test'))):
+    for f in os.listdir(os.path.join(data_path, 'test')):
+        # print(i, splitext(splitext(basename(f))[0])[0])
+        curr = splitext(splitext(basename(f))[0])[0]
         img_path = os.path.join(data_path, 'test', f)
         img = image.load_img(img_path, target_size=(299, 299))
         x = image.img_to_array(img)
         X += [x]
         # y += [os.path.splitext(os.path.splitext(os.path.basename(img_path))[0])]
         y += [i]
+        if prev == curr:
+            i += 1
+        else:
+            prev = curr
 
     X = applications.inception_v3.preprocess_input(np.array(X))
     y = np.array(y)

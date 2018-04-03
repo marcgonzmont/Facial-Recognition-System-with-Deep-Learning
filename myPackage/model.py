@@ -1,10 +1,15 @@
 from tensorflow.contrib.keras import applications, layers, models, optimizers
 import numpy as np
 from numba import jit
-# from PIL import Image as im
+from matplotlib import pyplot as plt
 
 @jit
 def loadModel(n_classes):
+    '''
+    This function loads a pre-trained Keras model
+    :param n_classes: number of classes to configure the model
+    :return: model configured
+    '''
     base_model = applications.inception_v3.InceptionV3(input_shape= (299, 299, 3), weights= 'imagenet', include_top= False)
     # add a global spatial average pooling layer
     x = layers.GlobalAveragePooling2D()(base_model.output)
@@ -21,17 +26,33 @@ def loadModel(n_classes):
 
     return model
 
+
 @jit
-def trainModel(model, X, y):
-    batch_size = 32
-    n_epoch = 1
-    model.fit(x= X, y= y, batch_size= batch_size, epochs= n_epoch, verbose=0)
+def trainModel(model, batch_size, n_epoch, X, y):
+    '''
+    Train the loaded model
+    :param model: model loaded
+    :param X: training instances
+    :param y: training labels
+    :return: trained model
+    '''
+    model.fit(x= X, y= y, batch_size= batch_size, epochs= n_epoch, verbose=1)
+    # if plot:
+    #     plt.plot(history.history['accuracy'])
+    #     plt.show()
 
     return model
 
+
 @jit
-def testModel(model, X):
-    batch_size = 32
+def testModel(model, batch_size, X, y):
+    '''
+    Test the model
+    :param model: trained model
+    :param X: test instances
+    :param y: test labels
+    :return:
+    '''
     for i in X:
         predict = model.predict(i, batch_size= batch_size)
         print('Prediction of the model: '.format(np.argmax(predict)))
