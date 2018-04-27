@@ -12,6 +12,7 @@ def prepareTrainData(data_path):
     :param data_path: path where the folders of the images are stored
     :return: array of images and array of labels
     '''
+    print("\nPreparing TRAIN data...")
     X = []
     y = []
     n_categories = 0
@@ -21,6 +22,7 @@ def prepareTrainData(data_path):
         for f in os.listdir(os.path.join(data_path, 'train', c)):
             # print(i, c, f)
             img_path = os.path.join(data_path, 'train', c, f)
+            # print(img_path)
             img = image.load_img(img_path, target_size=(299, 299))
             x = image.img_to_array(img)
             X += [x]
@@ -41,6 +43,7 @@ def prepateTestData(data_path):
     :param data_path: path where the folders of the images are stored
     :return: array of images and array of labels
     '''
+    print("\nPreparing TEST data...")
     X = []
     y = []
     i = 0
@@ -65,6 +68,15 @@ def prepateTestData(data_path):
 
     return X, y
 
+
+def split_train_val(data, test_ratio):
+    shuffled_indices = np.random.permutation(len(data))
+    test_set_size = int(len(data) * test_ratio)
+    val_indices = shuffled_indices[:test_set_size]
+    train_indices = shuffled_indices[test_set_size:]
+    train_set = data.iloc[train_indices]
+    val_set  = data.iloc[val_indices]
+    return train_set.reset_index(drop=True), val_set.reset_index(drop=True)
 
 @jit
 def getSamples(path):
