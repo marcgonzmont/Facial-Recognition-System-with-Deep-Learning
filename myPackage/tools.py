@@ -53,10 +53,10 @@ def prepateTestData(data_path):
         # print(i, splitext(splitext(basename(f))[0])[0])
         curr = splitext(splitext(basename(f))[0])[0]
         img_path = os.path.join(data_path, 'test', f)
+        # print(img_path)
         img = image.load_img(img_path, target_size=(299, 299))
         x = image.img_to_array(img)
         X += [x]
-        # y += [os.path.splitext(os.path.splitext(os.path.basename(img_path))[0])]
         y += [i]
         if prev == curr:
             i += 1
